@@ -315,6 +315,25 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* ── 전체 초기화 버튼 ── */
+    .btn-reset {
+      margin-left: auto;
+      padding: 0.3rem 0.75rem;
+      background: transparent;
+      color: var(--danger);
+      border: 1.5px solid #e8c8c4;
+      border-radius: 0.5rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-reset:hover {
+      background: var(--danger-lt);
+      border-color: var(--danger);
+    }
+
     /* ── FOOTER ── */
     footer {
       text-align: center;
@@ -377,6 +396,7 @@
       <div class="card-title">
         🗓️ 예약 목록
         <span class="count-badge" id="count-badge">0</span>
+        <button class="btn-reset" id="btn-reset" onclick="clearAll()" style="display:none;">전체 초기화</button>
       </div>
       <div id="reservation-list">
         <!-- 항목은 JS로 렌더링 -->
@@ -390,15 +410,35 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ── 데이터 (임시 배열, 추후 localStorage로 교체) ──
-    let reservations = [];
-    let nextId = 1;
+    // ── localStorage 키 ──
+    const STORAGE_KEY = 'morningbrew_reservations';
+
+    // ── localStorage 저장/불러오기 ──
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(reservations));
+    }
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    // ── 데이터 초기화 (localStorage에서 불러오기) ──
+    let reservations = loadFromStorage();
+    let nextId = reservations.length > 0
+      ? Math.max(...reservations.map(r => r.id)) + 1
+      : 1;
 
     // ── DOM 참조 ──
     const form      = document.getElementById('reservation-form');
     const listEl    = document.getElementById('reservation-list');
     const countEl   = document.getElementById('count-badge');
     const toastEl   = document.getElementById('toast');
+    const btnReset  = document.getElementById('btn-reset');
 
     const fName   = document.getElementById('input-name');
     const fPhone  = document.getElementById('input-phone');
@@ -449,6 +489,7 @@
         guests: fGuests.value,
       };
       reservations.push(item);
+      saveToStorage();
       render();
       form.reset();
       showToast(`${item.name}님 예약이 추가됐습니다 ☕`);
@@ -458,13 +499,25 @@
     function deleteReservation(id) {
       const target = reservations.find(r => r.id === id);
       reservations = reservations.filter(r => r.id !== id);
+      saveToStorage();
       render();
       if (target) showToast(`${target.name}님 예약을 삭제했습니다.`);
+    }
+
+    // ── 전체 초기화 ──
+    function clearAll() {
+      if (!confirm('모든 예약을 삭제하시겠습니까?')) return;
+      reservations = [];
+      nextId = 1;
+      saveToStorage();
+      render();
+      showToast('전체 예약이 초기화됐습니다.');
     }
 
     // ── 렌더링 ──
     function render() {
       countEl.textContent = reservations.length;
+      btnReset.style.display = reservations.length > 0 ? 'block' : 'none';
 
       if (reservations.length === 0) {
         listEl.innerHTML = `
@@ -518,7 +571,7 @@
       toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
     }
 
-    // ── 초기 렌더 ──
+    // ── 초기 렌더 (localStorage에서 불러온 데이터로 시작) ──
     render();
   </script>
 </body>

@@ -1,5 +1,0 @@
-{
-  "functions": {
-    "api/config.js": { "runtime": "nodejs20.x" }
-  }
-}

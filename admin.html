@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예약 관리 — 모닝브루 관리자</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brown:    #5c3d2e;
+      --cream:    #fdf6ee;
+      --warm:     #f5ede0;
+      --accent:   #c47c3a;
+      --text:     #2d2014;
+      --muted:    #8a7060;
+      --white:    #ffffff;
+      --danger:   #c0392b;
+      --danger-lt:#fdf0ee;
+      --success:  #2e7d32;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a0f07 0%, #3b2314 100%);
+      padding: 1.5rem 1.5rem 1.25rem;
+      text-align: center;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(196,124,58,0.25);
+      color: #f5c99a;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(196,124,58,0.4);
+      margin-bottom: 0.6rem;
+    }
+    header h1 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(1.4rem, 5vw, 1.9rem);
+      color: var(--white);
+      font-weight: 700;
+    }
+    header p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.55);
+      margin-top: 0.35rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.78rem;
+      text-decoration: none;
+      margin-bottom: 0.75rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.85); }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 1.75rem 1.25rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ── 카드 ── */
+    .card {
+      background: var(--white);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      box-shadow: 0 2px 16px rgba(92,61,46,0.08);
+    }
+    .card-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    /* ── 상태 요약 바 ── */
+    .summary-bar {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .summary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1.5px solid transparent;
+    }
+    .chip-all      { background: var(--warm);  color: var(--brown);  border-color: #e0cbb8; }
+    .chip-pending  { background: #fff8e1; color: #b45309; border-color: #fcd34d; }
+    .chip-confirmed{ background: #e8f5e9; color: #2e7d32; border-color: #a7d7a9; }
+    .chip-cancelled{ background: #fdf0ee; color: #c0392b; border-color: #f5b7b1; }
+
+    /* ── 예약 목록 ── */
+    #reservation-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .loading-state, .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .empty-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+    /* ── 예약 카드 ── */
+    .reservation-item {
+      background: var(--warm);
+      border-radius: 1rem;
+      padding: 1rem 1.1rem;
+      animation: slideIn 0.2s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .item-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+    .item-index {
+      width: 2rem;
+      height: 2rem;
+      background: var(--accent);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .item-body { flex: 1; min-width: 0; }
+    .item-top {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.3rem;
+    }
+    .item-name {
+      font-weight: 700;
+      font-size: 0.97rem;
+      color: var(--brown);
+    }
+    .item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    .item-meta span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .item-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding: 0.4rem 0.7rem;
+      background: rgba(92,61,46,0.06);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 0.4rem 0.4rem 0;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── 상태 배지 ── */
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── 상태 변경 select ── */
+    .status-select {
+      padding: 0.3rem 0.6rem;
+      border: 1.5px solid #e8d8c8;
+      border-radius: 0.5rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--white);
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .status-select:focus { border-color: var(--accent); }
+
+    /* ── 삭제 버튼 ── */
+    .btn-delete {
+      padding: 0.3rem 0.75rem;
+      background: var(--white);
+      color: var(--danger);
+      border: 1.5px solid #e8c8c4;
+      border-radius: 0.5rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      margin-left: auto;
+    }
+    .btn-delete:hover { background: var(--danger-lt); border-color: var(--danger); }
+
+    /* ── 전체 초기화 ── */
+    .btn-reset {
+      margin-left: auto;
+      padding: 0.3rem 0.75rem;
+      background: transparent;
+      color: var(--danger);
+      border: 1.5px solid #e8c8c4;
+      border-radius: 0.5rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-reset:hover { background: var(--danger-lt); border-color: var(--danger); }
+
+    /* ── 카운트 배지 ── */
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      min-width: 1.4rem;
+      height: 1.4rem;
+      border-radius: 999px;
+      padding: 0 0.4rem;
+    }
+
+    /* ── 토스트 ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      background: var(--brown);
+      color: var(--white);
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 9999;
+      max-width: calc(100vw - 2rem);
+      text-align: center;
+      white-space: normal;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger); }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="./index.html" class="back-link">← 카페 홈으로</a>
+    <div class="header-badge">🔒 모닝브루 관리자</div>
+    <h1>예약 관리</h1>
+    <p>픽업 예약 목록 확인 및 상태 관리</p>
+  </header>
+
+  <main>
+
+    <!-- 상태 요약 -->
+    <div class="card" id="summary-card" style="display:none;">
+      <div class="summary-bar">
+        <span class="summary-chip chip-all">전체 <span id="cnt-all">0</span>건</span>
+        <span class="summary-chip chip-pending">대기중 <span id="cnt-pending">0</span></span>
+        <span class="summary-chip chip-confirmed">확정됨 <span id="cnt-confirmed">0</span></span>
+        <span class="summary-chip chip-cancelled">취소됨 <span id="cnt-cancelled">0</span></span>
+      </div>
+    </div>
+
+    <!-- 예약 목록 -->
+    <div class="card">
+      <div class="card-title">
+        🗓️ 예약 목록
+        <span class="count-badge" id="count-badge">0</span>
+        <button class="btn-reset" id="btn-reset" style="display:none;">전체 초기화</button>
+      </div>
+      <div id="reservation-list">
+        <div class="loading-state">불러오는 중...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>© 2026 모닝브루 Morning Brew — 관리자 전용</footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── 상태 맵 ──
+    const STATUS_MAP = {
+      pending:   { label: '대기중', bg: '#fff8e1', color: '#b45309' },
+      confirmed: { label: '확정됨', bg: '#e8f5e9', color: '#2e7d32' },
+      cancelled: { label: '취소됨', bg: '#fdf0ee', color: '#c0392b' },
+    };
+    function getStatus(s) { return STATUS_MAP[s] || STATUS_MAP.pending; }
+
+    // ── Supabase 초기화 ──
+    const { createClient } = supabase;
+    let db;
+
+    async function initSupabase() {
+      const { supabaseUrl, supabaseKey } = await fetch('/api/config').then(r => r.json());
+      db = createClient(supabaseUrl, supabaseKey);
+    }
+
+    // ── DOM 참조 ──
+    const listEl      = document.getElementById('reservation-list');
+    const countEl     = document.getElementById('count-badge');
+    const btnReset    = document.getElementById('btn-reset');
+    const summaryCard = document.getElementById('summary-card');
+    const toastEl     = document.getElementById('toast');
+
+    let reservations = [];
+
+    // ── 예약 목록 로드 ──
+    async function loadReservations() {
+      const { data, error } = await db
+        .from('reservations')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        listEl.innerHTML = '<div class="loading-state">목록을 불러오지 못했습니다.</div>';
+        return;
+      }
+      reservations = data || [];
+      render();
+    }
+
+    // ── 상태 변경 ──
+    async function updateStatus(id, newStatus) {
+      const { error } = await db
+        .from('reservations')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (error) { showToast('상태 변경에 실패했습니다.', 'error'); return; }
+
+      const item = reservations.find(r => r.id === id);
+      if (item) item.status = newStatus;
+      render();
+      showToast('상태가 변경됐습니다.');
+    }
+
+    // ── 예약 삭제 ──
+    async function deleteReservation(id) {
+      const target = reservations.find(r => r.id === id);
+      const { error } = await db.from('reservations').delete().eq('id', id);
+      if (error) { showToast('삭제에 실패했습니다.', 'error'); return; }
+      if (target) showToast(`${target.name}님 예약을 삭제했습니다.`);
+      await loadReservations();
+    }
+
+    // ── 전체 초기화 ──
+    btnReset.addEventListener('click', async () => {
+      if (!confirm('모든 예약을 삭제하시겠습니까?')) return;
+      const { error } = await db.from('reservations').delete().gte('id', 0);
+      if (error) { showToast('초기화에 실패했습니다.', 'error'); return; }
+      showToast('전체 예약이 초기화됐습니다.');
+      await loadReservations();
+    });
+
+    // ── 렌더링 ──
+    function render() {
+      countEl.textContent = reservations.length;
+      btnReset.style.display = reservations.length > 0 ? 'block' : 'none';
+      summaryCard.style.display = reservations.length > 0 ? 'block' : 'none';
+
+      // 상태 카운트 업데이트
+      document.getElementById('cnt-all').textContent = reservations.length;
+      document.getElementById('cnt-pending').textContent =
+        reservations.filter(r => !r.status || r.status === 'pending').length;
+      document.getElementById('cnt-confirmed').textContent =
+        reservations.filter(r => r.status === 'confirmed').length;
+      document.getElementById('cnt-cancelled').textContent =
+        reservations.filter(r => r.status === 'cancelled').length;
+
+      if (reservations.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <span class="empty-icon">☕</span>
+            <div>아직 예약이 없습니다</div>
+          </div>`;
+        return;
+      }
+
+      listEl.innerHTML = reservations.map((r, i) => {
+        const st = getStatus(r.status);
+        const currentStatus = r.status || 'pending';
+        return `
+          <div class="reservation-item" data-id="${r.id}">
+            <div class="item-row">
+              <div class="item-index">${i + 1}</div>
+              <div class="item-body">
+                <div class="item-top">
+                  <span class="item-name">${escHtml(r.name)}</span>
+                  <span class="status-badge" style="background:${st.bg};color:${st.color};">${st.label}</span>
+                </div>
+                <div class="item-meta">
+                  <span>📞 ${escHtml(r.phone)}</span>
+                  <span>🕐 ${formatTime(r.time)}</span>
+                  <span>👤 ${escHtml(String(r.guests))}명</span>
+                </div>
+                ${r.note ? `<div class="item-note">"${escHtml(r.note)}"</div>` : ''}
+                <div class="item-actions">
+                  <select class="status-select" onchange="updateStatus(${r.id}, this.value)">
+                    <option value="pending"   ${currentStatus === 'pending'   ? 'selected' : ''}>대기중</option>
+                    <option value="confirmed" ${currentStatus === 'confirmed' ? 'selected' : ''}>확정됨</option>
+                    <option value="cancelled" ${currentStatus === 'cancelled' ? 'selected' : ''}>취소됨</option>
+                  </select>
+                  <button class="btn-delete" onclick="deleteReservation(${r.id})">삭제</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── 유틸 ──
+    function formatTime(t) {
+      if (!t) return '';
+      const [h, m] = t.split(':');
+      const hour = parseInt(h);
+      const ampm = hour < 12 ? '오전' : '오후';
+      const h12  = hour % 12 || 12;
+      return `${ampm} ${h12}:${m}`;
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    let toastTimer;
+    function showToast(msg, type = '') {
+      toastEl.textContent = msg;
+      toastEl.className = 'toast' + (type ? ' ' + type : '');
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+    }
+
+    // ── 초기 실행 ──
+    initSupabase()
+      .then(() => loadReservations())
+      .catch(() => {
+        listEl.innerHTML = '<div class="loading-state">서버 연결에 실패했습니다. 새로고침 해주세요.</div>';
+      });
+  </script>
+
+</body>
+</html>

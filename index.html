@@ -3,8 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>모닝브루 — 망원동 핸드드립 카페</title>
+
+  <!-- ── SEO: 타이틀 (키워드 + 지역 + 차별점) ── -->
+  <title>모닝브루 | 망원동 핸드드립 카페 · 서울 마포구 · 매일 08:00 오픈</title>
+
+  <!-- ── SEO: 메타 설명 ── -->
+  <meta name="description" content="서울 망원동 핸드드립 전문 카페 모닝브루. 매일 08:00 오픈 — 인근 스페셜티 카페보다 2~3시간 이른 오픈. 바리스타 직접 핸드드립, 당일 구운 수제 스콘, 1인 방문 최적화. 망원역 2번 출구 도보 6분.">
+
+  <!-- ── SEO: 기본 태그 ── -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://my-shop-vert-rho.vercel.app/">
+
+  <!-- ── GEO: Open Graph ── -->
+  <meta property="og:type" content="restaurant">
+  <meta property="og:title" content="모닝브루 — 망원동 핸드드립 카페 · 매일 08:00 오픈">
+  <meta property="og:description" content="서울 망원동에서 아침 8시에 문을 여는 유일한 핸드드립 전문 카페. 대기 없이, 눈치 없이, 혼자서도 편하게.">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="모닝브루 Morning Brew">
+  <meta property="og:url" content="https://my-shop-vert-rho.vercel.app/">
+
+  <!-- ── GEO: Twitter Card ── -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="모닝브루 — 망원동 핸드드립 카페">
+  <meta name="twitter:description" content="서울 망원동, 아침 8시부터 열리는 핸드드립 전문 카페. 대기 없이, 혼자서도 편하게.">
+
+  <!-- ── 성능: Google Fonts preconnect (렌더 블로킹 최소화) ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- ── Schema: LocalBusiness / CafeOrCoffeeShop ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CafeOrCoffeeShop",
+    "name": "모닝브루",
+    "alternateName": "Morning Brew",
+    "description": "망원동에서 아침 8시에 문을 여는 유일한 핸드드립 전문 카페. 바리스타가 매일 직접 핸드드립하며, 당일 구운 수제 스콘과 1인 방문 최적화 공간을 제공합니다. 인근 스페셜티 카페 대비 2~3시간 이른 오픈.",
+    "telephone": "02-123-4567",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "망원동",
+      "addressLocality": "마포구",
+      "addressRegion": "서울특별시",
+      "addressCountry": "KR"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "08:00",
+        "closes": "20:00"
+      }
+    ],
+    "servesCuisine": ["핸드드립 커피", "스페셜티 커피", "수제 스콘"],
+    "priceRange": "₩₩",
+    "sameAs": ["https://instagram.com/morningbrew_official"]
+  }
+  </script>
+
+  <!-- ── Schema: FAQPage (AI 직답 대응) ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "모닝브루는 몇 시에 열어요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "화요일부터 일요일까지 매일 오전 8시에 오픈합니다. 라스트오더는 오후 7시 30분, 마감은 오후 8시입니다. 월요일은 정기 휴무입니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "혼자 방문해도 괜찮나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "네, 모닝브루는 1인 방문에 최적화된 카페입니다. 1인 전용 바 좌석과 1인 테이블을 충분히 마련해두어 혼자 오셔도 눈치 없이 편하게 앉아 이용하실 수 있습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "망원역에서 얼마나 걸려요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "망원역 2번 출구에서 도보 약 6분 거리입니다. 골목 끝에 위치해 있습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "핸드드립 커피는 기다려야 하나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "바리스타가 한 잔씩 직접 핸드드립하지만 대기 최소화를 원칙으로 운영합니다. 출근 전 픽업 예약을 이용하시면 지정 시간에 대기 없이 수령하실 수 있습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "픽업 예약은 어떻게 하나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "홈페이지의 '픽업 예약하기' 버튼으로 온라인 예약하거나, 전화(02-123-4567)로 예약하실 수 있습니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "수제 스콘은 매일 있나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "수제 스콘은 매일 아침 직접 구워 당일 한정으로 판매합니다. 오전 중 품절될 수 있으니 이른 방문을 권장드립니다."
+        }
+      }
+    ]
+  }
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -47,7 +162,7 @@
       background: rgba(255,255,255,0.15);
       color: #f5c99a;
       font-size: 0.75rem;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.12em;
       padding: 0.35rem 1rem;
       border-radius: 999px;
       margin-bottom: 1.5rem;
@@ -66,17 +181,26 @@
 
     .hero-title span {
       display: block;
-      font-size: clamp(1rem, 3vw, 1.4rem);
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
       font-family: 'Noto Sans KR', sans-serif;
-      font-weight: 400;
+      font-weight: 500;
       color: #f5c99a;
-      letter-spacing: 0.05em;
-      margin-top: 0.5rem;
+      letter-spacing: 0.06em;
+      margin-top: 0.6rem;
+    }
+
+    .hero-claim {
+      font-size: clamp(0.85rem, 2.2vw, 1rem);
+      color: rgba(255,255,255,0.9);
+      max-width: 30rem;
+      margin: 0 auto 0.75rem;
+      font-weight: 500;
+      line-height: 1.5;
     }
 
     .hero-desc {
-      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-      color: rgba(255,255,255,0.75);
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      color: rgba(255,255,255,0.6);
       max-width: 28rem;
       margin: 0 auto 2.5rem;
     }
@@ -182,8 +306,63 @@
     .feature-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--brown); margin-bottom: 0.35rem; }
     .feature-card p { font-size: 0.85rem; color: var(--muted); }
 
+    /* ── ABOUT ── */
+    .about { background: var(--cream); }
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    @media (min-width: 700px) {
+      .about-inner { grid-template-columns: 1fr 1fr; align-items: start; }
+    }
+    .about-lead {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .about-body {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .about-body p + p { margin-top: 0.75rem; }
+
+    .about-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .stat {
+      background: var(--white);
+      border-radius: 1rem;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: 0 2px 10px rgba(92,61,46,0.07);
+    }
+    .stat-num {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
     /* ── MENU ── */
-    .menu { background: var(--cream); }
+    .menu { background: var(--white); }
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -192,7 +371,7 @@
       margin: 0 auto;
     }
     .menu-card {
-      background: var(--white);
+      background: var(--cream);
       border-radius: 1.25rem;
       padding: 1.5rem;
       display: flex;
@@ -217,6 +396,51 @@
     .menu-name { font-weight: 700; font-size: 0.95rem; color: var(--brown); margin-bottom: 0.15rem; }
     .menu-desc { font-size: 0.8rem; color: var(--muted); }
     .menu-price { font-size: 1rem; font-weight: 700; color: var(--accent); white-space: nowrap; margin-left: auto; flex-shrink: 0; }
+
+    /* ── FAQ ── */
+    .faq { background: var(--cream); }
+    .faq-list {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .faq-item {
+      background: var(--white);
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(92,61,46,0.06);
+    }
+    .faq-item summary {
+      list-style: none;
+      padding: 1.1rem 1.5rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--brown);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      user-select: none;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+';
+      font-size: 1.25rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item[open] summary { border-bottom: 1px solid rgba(92,61,46,0.08); }
+    .faq-answer {
+      padding: 1rem 1.5rem 1.25rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
 
     /* ── INFO ── */
     .info { background: var(--white); }
@@ -254,14 +478,14 @@
     .info-row .label { color: var(--muted); flex-shrink: 0; }
     .info-row .value { font-weight: 500; text-align: right; }
 
-    .map-placeholder {
-      background: var(--brown);
-      border-radius: 1.25rem;
-      height: 180px;
+    .map-link {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      background: var(--brown);
+      border-radius: 1.25rem;
+      height: 180px;
       color: rgba(255,255,255,0.85);
       font-size: 0.9rem;
       gap: 0.5rem;
@@ -269,8 +493,12 @@
       max-width: 700px;
       margin-left: auto;
       margin-right: auto;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
     }
-    .map-placeholder .map-icon { font-size: 2rem; }
+    .map-link:hover { opacity: 0.9; transform: translateY(-1px); }
+    .map-link .map-icon { font-size: 2rem; }
+    .map-link .map-sub { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem; }
 
     /* ── CONTACT ── */
     .contact {
@@ -290,6 +518,12 @@
       margin: 0 auto;
     }
     .btn-contact { width: 100%; justify-content: center; font-size: 1rem; }
+    .btn-reservation {
+      background: var(--accent);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(196,124,58,0.4);
+    }
+    .btn-reservation:hover { box-shadow: 0 6px 24px rgba(196,124,58,0.55); transform: translateY(-1px); }
     .btn-insta {
       background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
       color: var(--white);
@@ -302,12 +536,6 @@
       border: 1.5px solid rgba(255,255,255,0.3);
     }
     .btn-phone:hover { background: rgba(255,255,255,0.2); }
-    .btn-reservation {
-      background: var(--accent);
-      color: var(--white);
-      box-shadow: 0 4px 16px rgba(196,124,58,0.4);
-    }
-    .btn-reservation:hover { box-shadow: 0 6px 24px rgba(196,124,58,0.55); transform: translateY(-1px); }
 
     .admin-link {
       display: block;
@@ -329,28 +557,44 @@
       line-height: 2;
     }
     footer strong { color: rgba(255,255,255,0.7); }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-nav a {
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+    .footer-nav a:hover { color: rgba(255,255,255,0.8); }
 
     .inner { max-width: 900px; margin: 0 auto; }
   </style>
 </head>
 <body>
 
-  <!-- HERO -->
   <section class="hero" id="top">
-    <div class="hero-badge">☕ 망원동 핸드드립 카페</div>
+    <div class="hero-badge">☕ 망원동 핸드드립 카페 · 매일 08:00 오픈</div>
     <h1 class="hero-title">
       모닝브루
-      <span>Morning Brew</span>
+      <span>서울 마포구 망원동 핸드드립 전문 카페</span>
     </h1>
-    <p class="hero-desc">매일 아침, 당신의 하루를 위해 한 잔씩 정성껏 내립니다.</p>
+    <p class="hero-claim">
+      망원동에서 아침 8시에 문을 여는 유일한 핸드드립 전문 카페.<br>
+      인근 스페셜티 카페보다 2~3시간 이른 오픈.
+    </p>
+    <p class="hero-desc">대기 없이, 눈치 없이, 혼자서도 편하게 — 매일 아침 당신만의 자리가 기다립니다.</p>
     <div class="hero-cta">
-      <a href="#menu" class="btn btn-primary">☕ 메뉴 보기</a>
-      <a href="#contact" class="btn btn-outline">📍 찾아오기</a>
+      <a href="./reservation/" class="btn btn-primary">📋 픽업 예약하기</a>
+      <a href="#menu" class="btn btn-outline">☕ 메뉴 보기</a>
+      <a href="#info" class="btn btn-outline">📍 찾아오기</a>
     </div>
     <div class="scroll-hint">SCROLL</div>
   </section>
 
-  <!-- FEATURES -->
   <section class="features">
     <div class="inner">
       <div style="text-align:center; margin-bottom:2rem;">
@@ -360,24 +604,71 @@
       <div class="feature-grid">
         <div class="feature-card">
           <span class="feature-icon">☕</span>
-          <h3>매일 아침 핸드드립</h3>
-          <p>기계가 아닌 손으로, 매일 신선하게 내린 한 잔</p>
+          <h3>매일 아침 08:00 오픈</h3>
+          <p>인근 스페셜티 카페가 문을 열기 2~3시간 전, 출근 전 핸드드립 한 잔을 즐기세요</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🫱</span>
+          <h3>바리스타 직접 핸드드립</h3>
+          <p>기계가 아닌 손으로, 오늘의 싱글 오리진 원두로 한 잔씩 정성껏 내립니다</p>
         </div>
         <div class="feature-card">
           <span class="feature-icon">🥐</span>
           <h3>당일 구운 수제 스콘</h3>
-          <p>매일 아침 직접 구워 언제나 따뜻하고 바삭합니다</p>
+          <p>매일 아침 직접 구워 당일 한정 판매 — 언제나 따뜻하고 바삭합니다</p>
         </div>
         <div class="feature-card">
           <span class="feature-icon">🪑</span>
-          <h3>혼자 와도 편한 공간</h3>
-          <p>1인 좌석 충분히 마련 — 조용히 앉아 쉬어가세요</p>
+          <h3>1인 방문 최적화</h3>
+          <p>1인 전용 바 좌석·1인 테이블 우선 배치, 조용한 분위기로 혼자서도 편합니다</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- MENU -->
+  <section class="about" id="about">
+    <div class="inner">
+      <div class="about-inner">
+        <div>
+          <p class="section-label">Our Story</p>
+          <h2 class="section-title">모닝브루 이야기</h2>
+          <p class="about-lead">
+            망원동에서 아침 8시에 문을 여는<br>유일한 핸드드립 전문 카페입니다.
+          </p>
+          <div class="about-body">
+            <p>
+              망원동·합정 일대 스페셜티 카페들이 오전 10시 이후에 오픈하는 동안, 모닝브루는 출근 전 제대로 된 커피 한 잔을 원하는 분들을 위해 매일 오전 8시부터 문을 엽니다.
+            </p>
+            <p>
+              바리스타가 직접 핸드드립하기 때문에 한 잔 한 잔 다릅니다. 오늘의 원두는 매일 바뀌는 싱글 오리진 — 커피 한 잔으로 하루를 시작하는 의식을 소중히 여기는 분들을 위한 공간입니다.
+            </p>
+            <p>
+              혼자 와도 눈치 보이지 않는 공간. 큰 테이블보다 1인 좌석을 우선으로 배치하고, 음악 볼륨은 낮게 유지합니다. 조용히 앉아 작업하거나 책을 읽거나, 그냥 쉬어가도 좋습니다.
+            </p>
+          </div>
+        </div>
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-num">08:00</span>
+            <span class="stat-label">매일 오픈<br>경쟁사 대비 2~3시간 이른 오픈 시각</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">핸드드립 전문<br>기계 없이 바리스타가 직접 제조</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">1인</span>
+            <span class="stat-label">방문 최적화<br>1인 전용 좌석 우선 배치</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">매일</span>
+            <span class="stat-label">당일 구운 스콘<br>오전 중 품절 한정 판매</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="menu" id="menu">
     <div class="inner">
       <p class="section-label">Menu</p>
@@ -388,7 +679,7 @@
           <div class="menu-icon">☕</div>
           <div class="menu-info">
             <div class="menu-name">핸드드립 커피</div>
-            <div class="menu-desc">오늘의 원두로 한 잔씩 정성껏</div>
+            <div class="menu-desc">오늘의 원두로 바리스타가 한 잔씩</div>
           </div>
           <div class="menu-price">5,500원</div>
         </div>
@@ -396,7 +687,7 @@
           <div class="menu-icon">🫘</div>
           <div class="menu-info">
             <div class="menu-name">오늘의 원두</div>
-            <div class="menu-desc">매일 바뀌는 싱글 오리진</div>
+            <div class="menu-desc">매일 바뀌는 싱글 오리진 원두</div>
           </div>
           <div class="menu-price">4,500원</div>
         </div>
@@ -404,7 +695,7 @@
           <div class="menu-icon">🥐</div>
           <div class="menu-info">
             <div class="menu-name">수제 스콘</div>
-            <div class="menu-desc">당일 아침 직접 구운 버터 스콘</div>
+            <div class="menu-desc">당일 아침 직접 구운 버터 스콘 (한정)</div>
           </div>
           <div class="menu-price">3,500원</div>
         </div>
@@ -420,17 +711,52 @@
     </div>
   </section>
 
-  <!-- INFO -->
+  <section class="faq" id="faq">
+    <div class="inner">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <p class="section-label">FAQ</p>
+        <h2 class="section-title">자주 묻는 질문</h2>
+        <p class="section-sub" style="margin-bottom:0;">궁금한 점을 미리 확인하세요</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>모닝브루는 몇 시에 열어요?</summary>
+          <p class="faq-answer">화요일부터 일요일까지 매일 <strong>오전 8시에 오픈</strong>합니다. 라스트오더는 오후 7시 30분, 마감은 오후 8시입니다. <strong>월요일은 정기 휴무</strong>입니다.</p>
+        </details>
+        <details class="faq-item">
+          <summary>혼자 방문해도 괜찮나요?</summary>
+          <p class="faq-answer">네, 모닝브루는 <strong>1인 방문에 최적화된 카페</strong>입니다. 1인 전용 바 좌석과 1인 테이블을 충분히 마련해두어 혼자 오셔도 눈치 없이 편하게 앉아 이용하실 수 있습니다.</p>
+        </details>
+        <details class="faq-item">
+          <summary>망원역에서 얼마나 걸려요?</summary>
+          <p class="faq-answer"><strong>망원역 2번 출구</strong>에서 도보 약 <strong>6분</strong> 거리입니다. 골목 끝에 위치해 있습니다.</p>
+        </details>
+        <details class="faq-item">
+          <summary>핸드드립 커피는 기다려야 하나요?</summary>
+          <p class="faq-answer">바리스타가 한 잔씩 직접 핸드드립하지만 <strong>대기 최소화를 원칙</strong>으로 운영합니다. 출근 전 픽업 예약을 이용하시면 지정 시간에 대기 없이 수령하실 수 있습니다.</p>
+        </details>
+        <details class="faq-item">
+          <summary>픽업 예약은 어떻게 하나요?</summary>
+          <p class="faq-answer">홈페이지 상단 또는 하단의 '<strong>픽업 예약하기</strong>' 버튼으로 온라인 예약하거나, 전화(<a href="tel:0212345678" style="color:var(--accent)">02-123-4567</a>)로 예약하실 수 있습니다.</p>
+        </details>
+        <details class="faq-item">
+          <summary>수제 스콘은 매일 있나요?</summary>
+          <p class="faq-answer">수제 스콘은 매일 아침 직접 구워 <strong>당일 한정으로 판매</strong>합니다. 오전 중 품절될 수 있으니 이른 방문을 권장드립니다.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <section class="info" id="info">
     <div class="inner">
       <p class="section-label">Visit Us</p>
       <h2 class="section-title">위치 &amp; 영업시간</h2>
-      <p class="section-sub">망원역 2번 출구에서 걸어서 6분</p>
+      <p class="section-sub">서울 마포구 망원동 · 망원역 2번 출구에서 도보 6분</p>
       <div class="info-grid">
         <div class="info-card">
           <div class="info-card-header"><span>🕐</span> 영업시간</div>
           <div class="info-row"><span class="label">화~일</span><span class="value">08:00 – 20:00</span></div>
-          <div class="info-row"><span class="label">월요일</span><span class="value">휴무</span></div>
+          <div class="info-row"><span class="label">월요일</span><span class="value">정기 휴무</span></div>
           <div class="info-row"><span class="label">라스트오더</span><span class="value">19:30</span></div>
         </div>
         <div class="info-card">
@@ -438,20 +764,24 @@
           <div class="info-row"><span class="label">주소</span><span class="value">서울 마포구 망원동</span></div>
           <div class="info-row"><span class="label">지하철</span><span class="value">망원역 2번 출구</span></div>
           <div class="info-row"><span class="label">도보</span><span class="value">6분 (골목 끝)</span></div>
+          <div class="info-row"><span class="label">전화</span><span class="value"><a href="tel:0212345678" style="color:var(--accent);font-weight:700;text-decoration:none;">02-123-4567</a></span></div>
         </div>
       </div>
-      <div class="map-placeholder">
+      <a href="https://www.google.com/maps/search/서울+마포구+망원동+카페"
+         target="_blank" rel="noopener"
+         class="map-link"
+         aria-label="서울 마포구 망원동 모닝브루 위치 Google 지도에서 보기">
         <div class="map-icon">🗺️</div>
-        <div>서울 망원동 골목 끝 — 망원역 2번 출구 도보 6분</div>
-      </div>
+        <div>서울 마포구 망원동 · 망원역 2번 출구 도보 6분</div>
+        <div class="map-sub">Google 지도에서 보기 →</div>
+      </a>
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section class="contact" id="contact">
     <p class="section-label">Contact</p>
     <h2 class="section-title">찾아오세요</h2>
-    <p class="section-sub">인스타그램 DM 또는 전화로 문의해주세요.<br>예약은 전화로 받고 있습니다.</p>
+    <p class="section-sub">픽업 예약은 온라인 또는 전화로 받고 있습니다.<br>인스타그램 DM으로도 문의 환영합니다.</p>
     <div class="contact-buttons">
       <a href="./reservation/" class="btn btn-reservation btn-contact">
         📋 픽업 예약하기
@@ -463,14 +793,21 @@
         📞 02-123-4567
       </a>
     </div>
-    <a href="./reservation/" class="admin-link">예약 관리 →</a>
+    <!-- admin 링크: 눈에 띄지 않게 유지 -->
+    <a href="./admin.html" class="admin-link">예약 관리 →</a>
   </section>
 
-  <!-- FOOTER -->
   <footer>
+    <nav class="footer-nav" aria-label="하단 내비게이션">
+      <a href="#about">카페 소개</a>
+      <a href="#menu">메뉴</a>
+      <a href="#faq">FAQ</a>
+      <a href="#info">위치 &amp; 영업시간</a>
+      <a href="./reservation/">픽업 예약</a>
+    </nav>
     <strong>모닝브루 Morning Brew</strong><br>
     서울 마포구 망원동 · 망원역 2번 출구 도보 6분<br>
-    화~일 08:00–20:00 · 월요일 휴무<br>
+    화~일 08:00–20:00 · 월요일 정기 휴무 · 02-123-4567<br>
     <br>
     © 2026 모닝브루. All rights reserved.
   </footer>

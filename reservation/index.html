@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>예약 관리 — 모닝브루</title>
+  <title>픽업 예약 — 모닝브루</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Supabase CDN (UMD) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -19,6 +23,7 @@
       --white:    #ffffff;
       --danger:   #c0392b;
       --danger-lt:#fdf0ee;
+      --success:  #2e7d32;
     }
 
     body {
@@ -161,17 +166,21 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 16px rgba(196,124,58,0.35);
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.4rem;
     }
-    .btn-add:hover {
+    .btn-add:hover:not(:disabled) {
       box-shadow: 0 6px 22px rgba(196,124,58,0.45);
       transform: translateY(-1px);
     }
-    .btn-add:active { transform: scale(0.98); }
+    .btn-add:active:not(:disabled) { transform: scale(0.98); }
+    .btn-add:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
     /* ── COUNT BADGE ── */
     .count-badge {
@@ -194,6 +203,14 @@
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
+    }
+
+    /* ── SKELETON / LOADING ── */
+    .loading-state {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
 
     /* ── EMPTY STATE ── */
@@ -300,7 +317,7 @@
       transform: translateX(-50%) translateY(6px);
       background: var(--brown);
       color: var(--white);
-      padding: 0.7rem 1.4rem;
+      padding: 0.75rem 1.5rem;
       border-radius: 999px;
       font-size: 0.85rem;
       font-weight: 500;
@@ -309,11 +326,16 @@
       transition: opacity 0.25s, transform 0.25s;
       white-space: nowrap;
       z-index: 9999;
+      max-width: calc(100vw - 2rem);
+      text-align: center;
+      white-space: normal;
     }
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger); }
 
     /* ── 전체 초기화 버튼 ── */
     .btn-reset {
@@ -347,16 +369,16 @@
 
   <header>
     <a href="../index.html" class="back-link">← 카페 홈으로</a>
-    <div class="header-badge">☕ 모닝브루 관리자</div>
-    <h1>예약 관리</h1>
-    <p>픽업 예약을 등록하고 목록을 확인하세요</p>
+    <div class="header-badge">☕ 모닝브루 픽업 예약</div>
+    <h1>픽업 예약</h1>
+    <p>출근 전 커피, 대기 없이 픽업하세요</p>
   </header>
 
   <main>
 
     <!-- 예약 입력 폼 -->
     <div class="card">
-      <div class="card-title">📋 새 예약 추가</div>
+      <div class="card-title">📋 예약하기</div>
       <form id="reservation-form" novalidate>
         <div class="form-grid">
           <div class="field" id="field-name">
@@ -387,7 +409,7 @@
             <span class="error-msg">인원수를 선택해 주세요.</span>
           </div>
         </div>
-        <button type="submit" class="btn-add">+ 예약 추가</button>
+        <button type="submit" class="btn-add" id="btn-submit">+ 예약하기</button>
       </form>
     </div>
 
@@ -396,10 +418,10 @@
       <div class="card-title">
         🗓️ 예약 목록
         <span class="count-badge" id="count-badge">0</span>
-        <button class="btn-reset" id="btn-reset" onclick="clearAll()" style="display:none;">전체 초기화</button>
+        <button class="btn-reset" id="btn-reset" style="display:none;">전체 초기화</button>
       </div>
       <div id="reservation-list">
-        <!-- 항목은 JS로 렌더링 -->
+        <div class="loading-state">불러오는 중...</div>
       </div>
     </div>
 
@@ -410,40 +432,42 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ── localStorage 키 ──
-    const STORAGE_KEY = 'morningbrew_reservations';
-
-    // ── localStorage 저장/불러오기 ──
-    function saveToStorage() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(reservations));
-    }
-
-    function loadFromStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
-      } catch {
-        return [];
-      }
-    }
-
-    // ── 데이터 초기화 (localStorage에서 불러오기) ──
-    let reservations = loadFromStorage();
-    let nextId = reservations.length > 0
-      ? Math.max(...reservations.map(r => r.id)) + 1
-      : 1;
+    // ── Supabase 초기화 ──
+    const { createClient } = supabase;
+    const db = createClient(
+      'https://mamnabcbqehboohikkes.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hbW5hYmNicWVoYm9vaGlra2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODQ5MzcsImV4cCI6MjA5NzU2MDkzN30.ilyF4xjdenayWSXv5UniqCFHrwLYhK1jcWKF8EP1Pv4'
+    );
 
     // ── DOM 참조 ──
     const form      = document.getElementById('reservation-form');
     const listEl    = document.getElementById('reservation-list');
     const countEl   = document.getElementById('count-badge');
     const toastEl   = document.getElementById('toast');
+    const btnSubmit = document.getElementById('btn-submit');
     const btnReset  = document.getElementById('btn-reset');
 
     const fName   = document.getElementById('input-name');
     const fPhone  = document.getElementById('input-phone');
     const fTime   = document.getElementById('input-time');
     const fGuests = document.getElementById('input-guests');
+
+    let reservations = [];
+
+    // ── 예약 목록 로드 ──
+    async function loadReservations() {
+      const { data, error } = await db
+        .from('reservations')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (error) {
+        listEl.innerHTML = '<div class="loading-state">목록을 불러오지 못했습니다.</div>';
+        return;
+      }
+      reservations = data || [];
+      render();
+    }
 
     // ── 유효성 검사 ──
     function validate() {
@@ -477,42 +501,52 @@
     });
 
     // ── 예약 추가 ──
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       if (!validate()) return;
 
-      const item = {
-        id:     nextId++,
-        name:   fName.value.trim(),
+      const name = fName.value.trim();
+
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = '처리 중...';
+
+      const { error } = await db.from('reservations').insert({
+        name,
         phone:  fPhone.value.trim(),
         time:   fTime.value,
         guests: fGuests.value,
-      };
-      reservations.push(item);
-      saveToStorage();
-      render();
+      });
+
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = '+ 예약하기';
+
+      if (error) {
+        showToast('잠시 후 다시 시도해주세요.', 'error');
+        return;
+      }
+
+      showToast(`${name}님, 픽업 예약이 완료됐습니다! 모닝브루에서 따뜻하게 기다리고 있을게요 ☕`, 'success');
       form.reset();
-      showToast(`${item.name}님 예약이 추가됐습니다 ☕`);
+      await loadReservations();
     });
 
     // ── 예약 삭제 ──
-    function deleteReservation(id) {
+    async function deleteReservation(id) {
       const target = reservations.find(r => r.id === id);
-      reservations = reservations.filter(r => r.id !== id);
-      saveToStorage();
-      render();
+      const { error } = await db.from('reservations').delete().eq('id', id);
+      if (error) { showToast('삭제에 실패했습니다.', 'error'); return; }
       if (target) showToast(`${target.name}님 예약을 삭제했습니다.`);
+      await loadReservations();
     }
 
     // ── 전체 초기화 ──
-    function clearAll() {
+    btnReset.addEventListener('click', async () => {
       if (!confirm('모든 예약을 삭제하시겠습니까?')) return;
-      reservations = [];
-      nextId = 1;
-      saveToStorage();
-      render();
+      const { error } = await db.from('reservations').delete().gte('id', 0);
+      if (error) { showToast('초기화에 실패했습니다.', 'error'); return; }
       showToast('전체 예약이 초기화됐습니다.');
-    }
+      await loadReservations();
+    });
 
     // ── 렌더링 ──
     function render() {
@@ -524,7 +558,7 @@
           <div class="empty-state">
             <div class="empty-icon">☕</div>
             <h3>아직 예약이 없습니다</h3>
-            <p>첫 예약을 추가해 보세요!<br>위 폼에 정보를 입력하고 '예약 추가' 버튼을 눌러주세요.</p>
+            <p>첫 예약을 추가해 보세요!<br>위 폼에 정보를 입력하고 '예약하기' 버튼을 눌러주세요.</p>
           </div>`;
         return;
       }
@@ -537,7 +571,7 @@
             <div class="item-meta">
               <span>📞 ${escHtml(r.phone)}</span>
               <span>🕐 ${formatTime(r.time)}</span>
-              <span>👤 ${escHtml(r.guests)}명</span>
+              <span>👤 ${escHtml(String(r.guests))}명</span>
             </div>
           </div>
           <button class="btn-delete" onclick="deleteReservation(${r.id})">삭제</button>
@@ -564,15 +598,17 @@
     }
 
     let toastTimer;
-    function showToast(msg) {
+    function showToast(msg, type = '') {
       toastEl.textContent = msg;
+      toastEl.className = 'toast' + (type ? ' ' + type : '');
       toastEl.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
     }
 
-    // ── 초기 렌더 (localStorage에서 불러온 데이터로 시작) ──
-    render();
+    // ── 초기 로드 ──
+    loadReservations();
   </script>
+
 </body>
 </html>
